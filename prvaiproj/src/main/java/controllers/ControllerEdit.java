@@ -29,7 +29,7 @@ public class ControllerEdit {
 		this.guiEdit = guiEdit;
 		index = 0;
 		editMode = false;
-		editedImg = null;
+		editedImg = new ImageIcon(DataManagement.decodeBase64ToBufferedImage(DataManagement.recoverAIList().get(index).getImgPath()));
 		guiEdit.addActListeners(new ActListener());
 		guiEdit.addListSelectionListeners(new LSListener());
 		initializeCBxes();
