@@ -29,7 +29,8 @@ public class ControllerEdit {
 		this.guiEdit = guiEdit;
 		index = 0;
 		editMode = false;
-		editedImg = new ImageIcon(DataManagement.decodeBase64ToBufferedImage(DataManagement.recoverAIList().get(index).getImgPath()));
+		editedImg = new ImageIcon(
+				DataManagement.decodeBase64ToBufferedImage(DataManagement.recoverAIList().get(index).getImgPath()));
 		guiEdit.addActListeners(new ActListener());
 		guiEdit.addListSelectionListeners(new LSListener());
 		initializeCBxes();
@@ -42,8 +43,9 @@ public class ControllerEdit {
 		List<AI> listAI = DataManagement.recoverAIList();
 		guiEdit.getLblIndex().setText((index + 1) + "/" + listAI.size());
 		guiEdit.getLblImage().setText("");
-		guiEdit.getLblImage()
-				.setIcon(new ImageIcon(DataManagement.decodeBase64ToBufferedImage(listAI.get(index).getImgPath())));
+		editedImg = new ImageIcon(
+				DataManagement.decodeBase64ToBufferedImage(DataManagement.recoverAIList().get(index).getImgPath()));
+		guiEdit.getLblImage().setIcon(editedImg);
 		guiEdit.getTxtName().setText(listAI.get(index).getName());
 		guiEdit.getcBYear().setSelectedItem(listAI.get(index).getYear());
 		guiEdit.getcBType().setSelectedItem(listAI.get(index).getType());
@@ -144,11 +146,7 @@ public class ControllerEdit {
 			;
 			DataManagement.deleteAI(DataManagement.recoverAIList().get(index));
 			DataManagement.insertAI(currentAI);
-
-			// Refresh AI list
-			DataManagement.refreshAIList();
-			// Reset the edited image
-			editedImg = null;
+			index = 0;
 			refreshComponents();
 		}
 	}
@@ -184,6 +182,8 @@ public class ControllerEdit {
 			guiEdit.dispose();
 		} else {
 			refreshComponents();
+			guiEdit.getPanelList().revalidate();
+			guiEdit.getPanelList().repaint();
 			initializeList();
 		}
 	}
