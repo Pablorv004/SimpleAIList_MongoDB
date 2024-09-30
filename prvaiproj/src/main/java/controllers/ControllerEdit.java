@@ -165,14 +165,14 @@ public class ControllerEdit {
 	}
 
 	public void deletionProcess() {
-		int confirmation = JOptionPane.showConfirmDialog(guiEdit, "Are you sure you want to delete this(ese) AIs?",
+		int confirmation = JOptionPane.showConfirmDialog(guiEdit, "Are you sure you want to delete this AI?",
 				"Confirm", JOptionPane.WARNING_MESSAGE);
 		if (confirmation == JOptionPane.YES_OPTION) {
 			for (int i = 0; i < DataManagement.recoverAIList().size(); i++)
 				if (guiEdit.getListAI().isSelectedIndex(i))
 					DataManagement.deleteAI(DataManagement.recoverAIList().get(i));
 			System.out.println("Success");
-			JOptionPane.showMessageDialog(guiEdit, "Successfully deleted Ai(s).", "Success",
+			JOptionPane.showMessageDialog(guiEdit, "Successfully deleted Ai.", "Success",
 					JOptionPane.INFORMATION_MESSAGE);
 		}
 		index = 0;
@@ -182,8 +182,7 @@ public class ControllerEdit {
 			guiEdit.dispose();
 		} else {
 			refreshComponents();
-			guiEdit.getPanelList().revalidate();
-			guiEdit.getPanelList().repaint();
+			guiEdit.getListAI().setModel(null);
 			initializeList();
 		}
 	}

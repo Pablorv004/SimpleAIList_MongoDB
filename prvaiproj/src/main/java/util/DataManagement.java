@@ -55,7 +55,10 @@ public class DataManagement {
 	public static int getLastID() {
 		if (aiList.size() == 0)
 			return 1;
-		return aiList.get(aiList.size() - 1).getId() + 1;
+		int id = 0;
+		for(AI a : aiList)
+			id = a.getId() > id ? a.getId() : id;
+		return id + 1;
 	}
 
 	public static ImageIcon scaleImg(String imgPath) {
