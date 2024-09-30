@@ -42,7 +42,8 @@ public class ControllerEdit {
 		List<AI> listAI = DataManagement.recoverAIList();
 		guiEdit.getLblIndex().setText((index + 1) + "/" + listAI.size());
 		guiEdit.getLblImage().setText("");
-		guiEdit.getLblImage().setIcon(new ImageIcon("src/main/resources/AI/ai_" + listAI.get(index).getId() + ".png"));
+		guiEdit.getLblImage()
+				.setIcon(new ImageIcon(DataManagement.decodeBase64ToBufferedImage(listAI.get(index).getImgPath())));
 		guiEdit.getTxtName().setText(listAI.get(index).getName());
 		guiEdit.getcBYear().setSelectedItem(listAI.get(index).getYear());
 		guiEdit.getcBType().setSelectedItem(listAI.get(index).getType());
@@ -103,6 +104,7 @@ public class ControllerEdit {
 				guiEdit.getLblImage().setText("");
 				editedImg = DataManagement.scaleImg(jfc.getSelectedFile().getAbsolutePath());
 				guiEdit.getLblImage().setIcon(editedImg);
+
 			} else
 				JOptionPane.showMessageDialog(guiEdit, "Not an Image!", "Error", JOptionPane.ERROR_MESSAGE);
 		}
@@ -115,8 +117,6 @@ public class ControllerEdit {
 		}
 		guiEdit.getListAI().setModel(dlm);
 		guiEdit.getListAI().setSelectedIndex(0);
-		guiEdit.getPanelList().revalidate();
-		guiEdit.getPanelList().repaint();
 	}
 
 	public void initializeCBxes() {
@@ -132,24 +132,25 @@ public class ControllerEdit {
 	}
 
 	public void applyChanges() {
-		int confirmation = JOptionPane.showConfirmDialog(guiEdit, "Are you sure you apply the changes?", "Confirm",
-				JOptionPane.WARNING_MESSAGE);
+		int confirmation = JOptionPane.showConfirmDialog(guiEdit, "Are you sure you want to apply the changes?",
+				"Confirm", JOptionPane.WARNING_MESSAGE);
 		if (confirmation == JOptionPane.YES_OPTION) {
-			if(editedImg != null)
-				DataManagement.writeAIImg(editedImg, DataManagement.recoverAIList().get(index).getId());
-			
+			// Update AI details
 			AI currentAI = new AI(DataManagement.recoverAIList().get(index).getId(), guiEdit.getTxtName().getText(),
 					guiEdit.getcBType().getItemAt(guiEdit.getcBType().getSelectedIndex()),
 					guiEdit.getcBYear().getItemAt(guiEdit.getcBYear().getSelectedIndex()),
-					"src/main/resources/AI/ai_" + DataManagement.recoverAIList().get(index).getId() + ".png");
+					DataManagement.encodeBufferedImageToBase64(
+							DataManagement.scaleImg(DataManagement.convertImageToBufferedImage(editedImg.getImage()))));
+			;
 			DataManagement.deleteAI(DataManagement.recoverAIList().get(index));
 			DataManagement.insertAI(currentAI);
+
+			// Refresh AI list
+			DataManagement.refreshAIList();
+			// Reset the edited image
+			editedImg = null;
+			refreshComponents();
 		}
-		DataManagement.refreshAIList();
-		guiEdit.getLblImage().revalidate();
-		guiEdit.getLblImage().repaint();
-		editedImg = null;
-		refreshComponents();
 	}
 
 	public void changeEditButtons() {
@@ -181,8 +182,10 @@ public class ControllerEdit {
 			JOptionPane.showMessageDialog(guiEdit, "No more AIs!", "Error", JOptionPane.ERROR_MESSAGE);
 			new GUIMainMenu(guiEdit);
 			guiEdit.dispose();
-		} else
+		} else {
 			refreshComponents();
+			initializeList();
+		}
 	}
 
 	private class LSListener implements ListSelectionListener {
@@ -192,7 +195,7 @@ public class ControllerEdit {
 			@SuppressWarnings("unchecked")
 			JList<String> list = (JList<String>) e.getSource();
 			index = list.getSelectedIndex();
-			if(list.getSelectedIndex() == -1)
+			if (list.getSelectedIndex() == -1)
 				index = 0;
 			refreshComponents();
 		}

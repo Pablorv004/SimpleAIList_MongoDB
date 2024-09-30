@@ -36,15 +36,13 @@ public class ControllerView {
 		}
 		guiView.getListAI().setModel(dlm);
 		guiView.getListAI().setSelectedIndex(0);
-		guiView.getPanelList().revalidate();
-		guiView.getPanelList().repaint();
 	}
 
 	public void refreshComponents() {
 		List<AI> listAI = DataManagement.recoverAIList();
 		guiView.getLblIndex().setText((index + 1) + "/" + listAI.size());
 		guiView.getLblImage().setText("");
-		guiView.getLblImage().setIcon(new ImageIcon("src/main/resources/AI/ai_" + listAI.get(index).getId() + ".png"));
+		guiView.getLblImage().setIcon(new ImageIcon(DataManagement.decodeBase64ToBufferedImage(listAI.get(index).getImgPath())));
 		guiView.getLblName().setText(listAI.get(index).getName());
 		guiView.getLblYear().setText(String.valueOf(listAI.get(index).getYear()));
 		guiView.getLblType().setText(listAI.get(index).getType() + " -");

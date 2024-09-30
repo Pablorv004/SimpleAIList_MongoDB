@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionListener;
@@ -85,7 +84,7 @@ public class GUIEdit extends JFrame {
 		panelList.setLayout(new BorderLayout(0, 0));
 
 		listAI = new JList<>();
-		listAI.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		
 		sPAI = new JScrollPane(listAI);
 		panelList.add(sPAI);
 

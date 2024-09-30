@@ -1,10 +1,13 @@
 package util;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
 
@@ -59,19 +62,47 @@ public class DataManagement {
 		return new ImageIcon(
 				new ImageIcon(imgPath).getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
 	}
-
-	public static void writeAIImg(ImageIcon savedImg, int aiNum) {
-		BufferedImage tempImg = new BufferedImage(savedImg.getIconWidth(), savedImg.getIconHeight(),
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2d = tempImg.createGraphics();
-		savedImg.paintIcon(null, g2d, 0, 0);
-		g2d.dispose();
-		try {
-			ImageIO.write(tempImg, "png", new File("src/main/resources/AI/ai_" + aiNum + ".png"));
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+	
+	public static BufferedImage scaleImg(BufferedImage imgPath) {
+		return convertImageToBufferedImage(imgPath.getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
 	}
+	
+	public static BufferedImage convertImageToBufferedImage(Image img) {
+        BufferedImage bufferedImage = new BufferedImage(
+                img.getWidth(null),
+                img.getHeight(null),
+                BufferedImage.TYPE_INT_ARGB); 
+        Graphics2D g2d = bufferedImage.createGraphics();
+        g2d.drawImage(img, 0, 0, null);
+        g2d.dispose();
+
+        return bufferedImage;
+    }
+
+	
+	public static String encodeBufferedImageToBase64(BufferedImage image) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+			ImageIO.write(image, "png", outputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        byte[] imageBytes = outputStream.toByteArray();
+        String base64String = Base64.getEncoder().encodeToString(imageBytes);
+        return base64String;
+    }
+	 
+	 public static BufferedImage decodeBase64ToBufferedImage(String base64String) {
+	        byte[] imageBytes = Base64.getDecoder().decode(base64String);
+	        ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
+	        try {
+				return ImageIO.read(bis);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	        return null;
+	    }
+	 
 	public static List<String> listImageSuffixes() {
 		List<String> imageSuffixes = new ArrayList<>();
 		imageSuffixes.add("png");

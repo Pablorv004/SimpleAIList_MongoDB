@@ -35,8 +35,6 @@ public class ControllerAdd {
 		guiAdd.getcBType().addItem("Self-Awareness");
 	}
 
-	
-
 	public void selectImg() {
 		JFileChooser jfc = new JFileChooser();
 		if (jfc.showOpenDialog(guiAdd) == JFileChooser.APPROVE_OPTION) {
@@ -69,11 +67,12 @@ public class ControllerAdd {
 
 	public void confirmButton() {
 		if (checkFields()) {
-			DataManagement.writeAIImg(savedImg, DataManagement.getLastID());
+
 			DataManagement.insertAI(guiAdd.getTxtName().getText(),
 					guiAdd.getcBType().getItemAt(guiAdd.getcBType().getSelectedIndex()),
 					guiAdd.getcBYear().getItemAt(guiAdd.getcBYear().getSelectedIndex()),
-					"src/main/resources/AI/ai_" + DataManagement.getLastID() + ".png");
+					DataManagement.encodeBufferedImageToBase64(
+							DataManagement.scaleImg(DataManagement.convertImageToBufferedImage(savedImg.getImage()))));
 			JOptionPane.showMessageDialog(guiAdd, "AI Added!", "Success", JOptionPane.INFORMATION_MESSAGE);
 			new GUIMainMenu(guiAdd);
 			guiAdd.dispose();
