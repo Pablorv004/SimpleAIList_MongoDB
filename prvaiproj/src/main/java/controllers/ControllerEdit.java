@@ -148,6 +148,7 @@ public class ControllerEdit {
 			DataManagement.insertAI(currentAI);
 			index = 0;
 			refreshComponents();
+			initializeList();
 		}
 	}
 
@@ -182,7 +183,6 @@ public class ControllerEdit {
 			guiEdit.dispose();
 		} else {
 			refreshComponents();
-			guiEdit.getListAI().setModel(null);
 			initializeList();
 		}
 	}
